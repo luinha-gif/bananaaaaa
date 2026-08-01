@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estação de Escuta — Sinal 0x7F</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0e1a;
+    --panel:#14162a;
+    --line:#2a2d4a;
+    --text:#e8e6f0;
+    --muted:#8a8ca8;
+    --amber:#ffb347;
+    --violet:#6c63ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    overflow-x:hidden;
+  }
+  #stars{
+    position:fixed;
+    inset:0;
+    z-index:0;
+  }
+  header{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:8vh 8vw;
+  }
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:var(--amber);
+    font-size:.75rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    margin-bottom:2rem;
+  }
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 12px var(--amber);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:.4; transform:scale(.7);}
+  }
+  h1{
+    font-family:'Instrument Serif', serif;
+    font-weight:400;
+    font-size:clamp(2.8rem, 8vw, 6.5rem);
+    line-height:1.02;
+    max-width:14ch;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--amber);
+  }
+  .sub{
+    margin-top:2rem;
+    max-width:46ch;
+    color:var(--muted);
+    font-size:.95rem;
+    line-height:1.7;
+  }
+  .readout{
+    margin-top:4rem;
+    display:flex;
+    gap:3rem;
+    flex-wrap:wrap;
+  }
+  .readout div{font-size:.7rem; color:var(--muted); letter-spacing:.1em;}
+  .readout strong{
+    display:block;
+    font-size:1.4rem;
+    color:var(--text);
+    margin-top:.4rem;
+    font-weight:500;
+  }
+  canvas#wave{
+    position:absolute;
+    bottom:0; left:0;
+    width:100%; height:140px;
+    opacity:.6;
+  }
+  section{
+    position:relative;
+    z-index:2;
+    padding:14vh 8vw;
+    border-top:1px solid var(--line);
+    background:linear-gradient(180deg, transparent, rgba(20,22,42,.6));
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:1.5px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .card{
+    background:var(--bg);
+    padding:2.5rem 2rem;
+    transition:background .3s ease;
+  }
+  .card:hover{ background:var(--panel); }
+  .card .freq{
+    color:var(--amber);
+    font-size:.75rem;
+    letter-spacing:.15em;
+  }
+  .card h3{
+    font-family:'Instrument Serif', serif;
+    font-weight:400;
+    font-style:italic;
+    font-size:1.6rem;
+    margin:1rem 0 .8rem;
+    color:var(--text);
+  }
+  .card p{
+    color:var(--muted);
+    font-size:.85rem;
+    line-height:1.6;
+  }
+  footer{
+    position:relative;
+    z-index:2;
+    padding:6vh 8vw;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:.75rem;
+    letter-spacing:.1em;
+  }
+  ::selection{ background:var(--violet); color:#fff; }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<header>
+  <div class="eyebrow"><span class="dot"></span> RECEBENDO — CANAL ABERTO</div>
+  <h1>Estamos <em>ouvindo</em><br>o silêncio entre<br>as estrelas.</h1>
+  <p class="sub">Uma rede de antenas voltadas para o vazio, catalogando cada ruído que não deveria existir. Isto não é ficção — é um registro do que já passou por aqui.</p>
+
+  <div class="readout">
+    <div>DECLINAÇÃO<strong>+27° 14&#39; 08&quot;</strong></div>
+    <div>FREQUÊNCIA<strong>1420.40 MHz</strong></div>
+    <div>RELAÇÃO SINAL/RUÍDO<strong id="snr">— dB</strong></div>
+  </div>
+
+  <canvas id="wave"></canvas>
+</header>
+
+<section>
+  <div class="eyebrow" style="color:var(--violet)">Registros recentes</div>
+  <div class="grid">
+    <div class="card">
+      <div class="freq">42.7 MHz — 03:14</div>
+      <h3>Pulso repetido</h3>
+      <p>Um padrão de 1.2 segundos, repetido onze vezes, depois silêncio absoluto por seis horas.</p>
+    </div>
+    <div class="card">
+      <div class="freq">108.3 MHz — 11:52</div>
+      <h3>Eco atrasado</h3>
+      <p>A mesma transmissão, chegando duas vezes com 4 segundos de diferença. A origem não muda.</p>
+    </div>
+    <div class="card">
+      <div class="freq">1420.4 MHz — 19:07</div>
+      <h3>Linha do hidrogênio</h3>
+      <p>Ruído de fundo cósmico, quase perfeito demais para ser apenas ruído.</p>
+    </div>
+    <div class="card">
+      <div class="freq">203.9 MHz — 23:41</div>
+      <h3>Silêncio ativo</h3>
+      <p>Ausência de sinal onde sempre houve um. A escuta continua mesmo quando não há nada.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>ESTAÇÃO 0x7F</span>
+  <span>TODAS AS COORDENADAS SÃO APROXIMADAS</span>
+</footer>
+
+<script>
+// Starfield
+const starsCanvas = document.getElementById('stars');
+const sctx = starsCanvas.getContext('2d');
+let stars = [];
+function resizeStars(){
+  starsCanvas.width = innerWidth;
+  starsCanvas.height = document.body.scrollHeight;
+  stars = Array.from({length: Math.floor(innerWidth*innerHeight/4000)}, () => ({
+    x: Math.random()*starsCanvas.width,
+    y: Math.random()*starsCanvas.height,
+    r: Math.random()*1.4+.2,
+    speed: Math.random()*.3+.05,
+    tw: Math.random()*Math.PI*2
+  }));
+}
+function drawStars(t){
+  sctx.clearRect(0,0,starsCanvas.width,starsCanvas.height);
+  for(const s of stars){
+    const alpha = .4 + Math.sin(t*.001 + s.tw)*.3;
+    sctx.fillStyle = `rgba(232,230,240,${Math.max(0,alpha)})`;
+    sctx.beginPath();
+    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sctx.fill();
+  }
+  requestAnimationFrame(drawStars);
+}
+resizeStars();
+window.addEventListener('resize', resizeStars);
+requestAnimationFrame(drawStars);
+
+// Waveform
+const waveCanvas = document.getElementById('wave');
+const wctx = waveCanvas.getContext('2d');
+function resizeWave(){
+  waveCanvas.width = waveCanvas.offsetWidth;
+  waveCanvas.height = waveCanvas.offsetHeight;
+}
+function drawWave(t){
+  resizeWave();
+  wctx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
+  wctx.strokeStyle = '#ffb347';
+  wctx.lineWidth = 1.5;
+  wctx.beginPath();
+  const mid = waveCanvas.height/2;
+  for(let x=0; x<waveCanvas.width; x++){
+    const y = mid
+      + Math.sin(x*0.02 + t*0.002)*18
+      + Math.sin(x*0.05 + t*0.004)*8
+      + Math.sin(x*0.008 + t*0.001)*24;
+    x===0 ? wctx.moveTo(x,y) : wctx.lineTo(x,y);
+  }
+  wctx.stroke();
+  requestAnimationFrame(drawWave);
+}
+requestAnimationFrame(drawWave);
+
+// Fake SNR readout
+const snr = document.getElementById('snr');
+setInterval(()=>{
+  snr.textContent = (Math.random()*8+1).toFixed(1) + ' dB';
+}, 1400);
+</script>
+
+</body>
+</html>
