@@ -151,4 +151,198 @@
   .bike-wrap svg{ width:100%; height:auto; overflow:visible; }
   .stripe-a{ stroke:var(--amarelo); }
   .stripe-b{ stroke:var(--vermelho); }
-  .stripe
+  .stripe-c{ stroke:var(--azul); }
+  .wheel{
+    fill:none; stroke:var(--creme); stroke-width:3;
+    transform-origin:center;
+    animation:spin 4s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce){ .wheel{ animation:none; } }
+
+  footer{
+    position:relative; z-index:3;
+    text-align:center; padding:8vh 6vw;
+    font-size:.65rem; letter-spacing:.3em;
+    color:#cfc8b8; text-transform:uppercase;
+  }
+  footer .flame{ color:var(--vermelho); }
+
+  @media (prefers-reduced-motion: reduce){
+    * { animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="trilha"></canvas>
+<canvas id="grain"></canvas>
+<div id="cursor"></div>
+
+<nav class="epochs-nav">
+  <a href="#s1" class="active"></a>
+  <a href="#s2"></a>
+  <a href="#s3"></a>
+  <a href="#s4"></a>
+</nav>
+
+<div class="veil">
+
+  <section id="s1">
+    <div class="roman">Antes do primeiro pedal</div>
+    <h1 class="epoch">Ela estava <em>encostada</em><br>no muro, esperando</h1>
+    <p class="scripture">Quadro baixo, guidão torto de tanto tombo, e aquelas três listras — amarela, vermelha, azul — riscando o quadro feito um raio parado no tempo.</p>
+    <div class="scrollcue"><span>DESÇA</span><span class="stem"></span></div>
+  </section>
+
+  <section id="s2">
+    <div class="roman">Epoch I — o primeiro empurrão</div>
+    <h1 class="epoch">Alguém <em>soltou</em><br>e não caiu</h1>
+    <p class="scripture">A rodinha ainda tava lá, encostada na parede da garagem, esquecida de propósito. O guri não olhou pra trás — só sentiu o vento entrar pelas listras da camisa e pela bicicleta.</p>
+  </section>
+
+  <section id="s3">
+    <div class="roman">Epoch II — o bairro inteiro</div>
+    <h1 class="epoch">A rua virou <em>pista</em><br>e o fim de tarde, eterno</h1>
+    <p class="scripture">Cada quarteirão era um continente, cada poça um oceano pra atravessar de pé nos pedais, mãos soltas do guidão, coração batendo mais rápido que a corrente.</p>
+    <div class="relic">
+      <div><div class="n">3</div><div class="l">Listras no quadro</div></div>
+      <div><div class="n">∞</div><div class="l">Voltas no quarteirão</div></div>
+      <div><div class="n">1</div><div class="l">Bicicleta que era tudo</div></div>
+    </div>
+  </section>
+
+  <section id="s4">
+    <div class="roman">Epoch III — o que fica</div>
+    <h1 class="epoch">Hoje ela é só <em>memória</em><br>enferrujando no galpão</h1>
+    <p class="scripture">Mas de vez em quando, num cheiro de chuva no asfalto quente, o guri ainda sente as listras passando rápido demais pra ver, e sabe: aquele verão nunca terminou de verdade.</p>
+
+    <div class="bike-wrap">
+      <svg viewBox="0 0 300 140" fill="none">
+        <circle class="wheel" cx="70" cy="100" r="32"/>
+        <circle class="wheel" cx="230" cy="100" r="32"/>
+        <circle cx="70" cy="100" r="3" fill="#f2ede0"/>
+        <circle cx="230" cy="100" r="3" fill="#f2ede0"/>
+        <path d="M70 100 L140 40 L180 100" stroke="#f2ede0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M140 40 L160 40" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M70 100 L180 100" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M230 100 L180 100" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M230 100 L200 55" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M200 55 L215 40 M200 55 L185 40" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
+        <path class="stripe-a" d="M95 88 L165 55" stroke-width="4" stroke-linecap="round"/>
+        <path class="stripe-b" d="M100 95 L170 62" stroke-width="4" stroke-linecap="round"/>
+        <path class="stripe-c" d="M105 102 L175 69" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </section>
+
+</div>
+
+<footer>Guri, bicicleta e as três listras <span class="flame">✦</span> um verão que não teve fim</footer>
+
+<script>
+/* ---------- Cursor ---------- */
+const cursor = document.getElementById('cursor');
+window.addEventListener('mousemove', e=>{
+  cursor.style.left = e.clientX+'px';
+  cursor.style.top = e.clientY+'px';
+});
+document.querySelectorAll('a').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>{ cursor.style.width='40px'; cursor.style.height='40px'; cursor.style.borderColor='#ff4d4d'; });
+  el.addEventListener('mouseleave', ()=>{ cursor.style.width='22px'; cursor.style.height='22px'; cursor.style.borderColor='#ffd23f'; });
+});
+
+/* ---------- Nav active state ---------- */
+const navLinks = document.querySelectorAll('.epochs-nav a');
+const sections = document.querySelectorAll('section');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('active'));
+      const idx = [...sections].indexOf(entry.target);
+      navLinks[idx].classList.add('active');
+    }
+  });
+}, {threshold:.5});
+sections.forEach(s=>io.observe(s));
+
+/* ---------- Trilha canvas: linhas de listras voando (efeito velocidade) ---------- */
+const canvas = document.getElementById('trilha');
+const ctx = canvas.getContext('2d');
+let W, H, lines = [];
+const LINE_COUNT = 90;
+const colors = ['#ffd23f','#ff4d4d','#4d7cff'];
+
+function resize(){
+  W = canvas.width = innerWidth;
+  H = canvas.height = document.body.scrollHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function spawnLine(){
+  return {
+    x: Math.random()*W,
+    y: Math.random()*H,
+    len: Math.random()*60+20,
+    speed: Math.random()*3+1,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    alpha: Math.random()*0.25+0.05
+  };
+}
+function initLines(){
+  lines = [];
+  for(let i=0;i<LINE_COUNT;i++) lines.push(spawnLine());
+}
+initLines();
+
+let scrollY = 0;
+window.addEventListener('scroll', ()=>{ scrollY = window.scrollY; });
+
+function draw(){
+  ctx.fillStyle = 'rgba(14,13,18,0.15)';
+  ctx.fillRect(0,0,W,H);
+
+  for(const l of lines){
+    ctx.strokeStyle = l.color;
+    ctx.globalAlpha = l.alpha;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(l.x, l.y - scrollY*0.2);
+    ctx.lineTo(l.x + l.len, l.y - scrollY*0.2);
+    ctx.stroke();
+
+    l.x += l.speed;
+    if(l.x > W + l.len){
+      Object.assign(l, spawnLine());
+      l.x = -l.len;
+    }
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* ---------- Film grain ---------- */
+const grainCanvas = document.getElementById('grain');
+const gctx = grainCanvas.getContext('2d');
+function resizeGrain(){
+  grainCanvas.width = innerWidth;
+  grainCanvas.height = innerHeight;
+}
+resizeGrain();
+window.addEventListener('resize', resizeGrain);
+function renderGrain(){
+  const imgData = gctx.createImageData(grainCanvas.width, grainCanvas.height);
+  const buffer = new Uint32Array(imgData.data.buffer);
+  for(let i=0;i<buffer.length;i++){
+    if(Math.random() < 0.05) buffer[i] = 0xffffffff;
+  }
+  gctx.putImageData(imgData, 0, 0);
+  setTimeout(()=>requestAnimationFrame(renderGrain), 60);
+}
+renderGrain();
+</script>
+
+</body>
+</html>
