@@ -3,262 +3,341 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estação de Escuta — Sinal 0x7F</title>
+<title>GÊNESE — o instante antes de tudo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d0e1a;
-    --panel:#14162a;
-    --line:#2a2d4a;
-    --text:#e8e6f0;
-    --muted:#8a8ca8;
-    --amber:#ffb347;
-    --violet:#6c63ff;
+    --void:#030309;
+    --deep:#0a0817;
+    --gold:#e8c887;
+    --ember:#ff6b4a;
+    --plasma:#8a6fff;
+    --mist:#b8b4d0;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'JetBrains Mono', monospace;
+    background:var(--void);
+    color:#f2f0f8;
+    font-family:'Space Mono', monospace;
     overflow-x:hidden;
+    cursor:none;
   }
-  #stars{
-    position:fixed;
-    inset:0;
-    z-index:0;
+  ::selection{ background:var(--ember); color:#000; }
+
+  #cursor{
+    position:fixed; top:0; left:0;
+    width:22px; height:22px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9999;
+    transform:translate(-50%,-50%);
+    transition:width .2s, height .2s, border-color .2s, opacity .3s;
+    mix-blend-mode:screen;
   }
-  header{
-    position:relative;
-    z-index:2;
+
+  #genesis{
+    position:fixed; inset:0; z-index:0;
+  }
+  #grain{
+    position:fixed; inset:0; z-index:1;
+    pointer-events:none;
+    opacity:.05;
+    mix-blend-mode:overlay;
+  }
+
+  .veil{
+    position:relative; z-index:3;
+  }
+
+  section{
     min-height:100vh;
     display:flex;
     flex-direction:column;
-    justify-content:center;
-    padding:8vh 8vw;
-  }
-  .eyebrow{
-    display:flex;
     align-items:center;
-    gap:12px;
-    color:var(--amber);
-    font-size:.75rem;
-    letter-spacing:.25em;
-    text-transform:uppercase;
-    margin-bottom:2rem;
+    justify-content:center;
+    text-align:center;
+    padding:10vh 6vw;
+    position:relative;
   }
-  .dot{
-    width:8px;height:8px;border-radius:50%;
-    background:var(--amber);
-    box-shadow:0 0 12px var(--amber);
-    animation:pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse{
-    0%,100%{opacity:1; transform:scale(1);}
-    50%{opacity:.4; transform:scale(.7);}
-  }
-  h1{
-    font-family:'Instrument Serif', serif;
-    font-weight:400;
-    font-size:clamp(2.8rem, 8vw, 6.5rem);
-    line-height:1.02;
-    max-width:14ch;
-  }
-  h1 em{
+
+  .roman{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:300;
     font-style:italic;
-    color:var(--amber);
+    color:var(--gold);
+    letter-spacing:.4em;
+    font-size:.75rem;
+    text-transform:uppercase;
+    margin-bottom:3rem;
+    opacity:0;
+    animation:rise 1.6s ease forwards;
   }
-  .sub{
-    margin-top:2rem;
-    max-width:46ch;
-    color:var(--muted);
-    font-size:.95rem;
-    line-height:1.7;
+
+  h1.epoch{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:300;
+    font-size:clamp(3rem, 11vw, 9rem);
+    line-height:.95;
+    letter-spacing:-.01em;
+    opacity:0;
+    animation:rise 1.8s .3s ease forwards;
   }
-  .readout{
-    margin-top:4rem;
-    display:flex;
-    gap:3rem;
-    flex-wrap:wrap;
+  h1.epoch em{
+    font-style:italic;
+    background:linear-gradient(120deg, var(--gold), var(--ember) 60%, var(--plasma));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
   }
-  .readout div{font-size:.7rem; color:var(--muted); letter-spacing:.1em;}
-  .readout strong{
-    display:block;
-    font-size:1.4rem;
-    color:var(--text);
-    margin-top:.4rem;
-    font-weight:500;
+
+  p.scripture{
+    max-width:44ch;
+    font-family:'Cormorant Garamond', serif;
+    font-size:clamp(1.1rem,2vw,1.5rem);
+    font-style:italic;
+    color:var(--mist);
+    line-height:1.8;
+    margin-top:2.5rem;
+    opacity:0;
+    animation:rise 1.8s .6s ease forwards;
   }
-  canvas#wave{
-    position:absolute;
-    bottom:0; left:0;
-    width:100%; height:140px;
+
+  @keyframes rise{
+    from{opacity:0; transform:translateY(28px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .scrollcue{
+    position:absolute; bottom:6vh;
+    display:flex; flex-direction:column; align-items:center; gap:.8rem;
+    color:var(--mist); font-size:.65rem; letter-spacing:.3em;
     opacity:.6;
   }
-  section{
-    position:relative;
-    z-index:2;
-    padding:14vh 8vw;
-    border-top:1px solid var(--line);
-    background:linear-gradient(180deg, transparent, rgba(20,22,42,.6));
+  .scrollcue .stem{
+    width:1px; height:50px;
+    background:linear-gradient(var(--gold), transparent);
+    animation:stretch 2s ease-in-out infinite;
   }
-  .grid{
+  @keyframes stretch{
+    0%,100%{transform:scaleY(1); opacity:.4;}
+    50%{transform:scaleY(1.3); opacity:1;}
+  }
+
+  .epochs-nav{
+    position:fixed; right:3vw; top:50%; transform:translateY(-50%);
+    z-index:10; display:flex; flex-direction:column; gap:1.4rem;
+  }
+  .epochs-nav a{
+    width:8px; height:8px; border-radius:50%;
+    background:transparent; border:1px solid var(--mist);
+    display:block; transition:.3s;
+  }
+  .epochs-nav a.active{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 14px var(--gold); }
+
+  .relic{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:1.5px;
-    background:var(--line);
-    border:1px solid var(--line);
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.08);
+    max-width:900px; width:100%;
+    margin-top:5rem;
   }
-  .card{
-    background:var(--bg);
-    padding:2.5rem 2rem;
-    transition:background .3s ease;
+  .relic div{
+    background:var(--void);
+    padding:2.2rem 1.4rem;
   }
-  .card:hover{ background:var(--panel); }
-  .card .freq{
-    color:var(--amber);
-    font-size:.75rem;
-    letter-spacing:.15em;
-  }
-  .card h3{
-    font-family:'Instrument Serif', serif;
-    font-weight:400;
-    font-style:italic;
-    font-size:1.6rem;
-    margin:1rem 0 .8rem;
-    color:var(--text);
-  }
-  .card p{
-    color:var(--muted);
-    font-size:.85rem;
-    line-height:1.6;
-  }
+  .relic .n{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.4rem; color:var(--gold); }
+  .relic .l{ font-size:.6rem; letter-spacing:.2em; color:var(--mist); margin-top:.6rem; text-transform:uppercase; }
+
   footer{
-    position:relative;
-    z-index:2;
-    padding:6vh 8vw;
-    border-top:1px solid var(--line);
-    display:flex;
-    justify-content:space-between;
-    color:var(--muted);
-    font-size:.75rem;
-    letter-spacing:.1em;
+    position:relative; z-index:3;
+    text-align:center; padding:8vh 6vw;
+    font-size:.65rem; letter-spacing:.3em;
+    color:var(--mist); text-transform:uppercase;
   }
-  ::selection{ background:var(--violet); color:#fff; }
+  footer .flame{ color:var(--ember); }
+
+  @media (prefers-reduced-motion: reduce){
+    * { animation-duration: 0.01ms !important; }
+  }
 </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
+<canvas id="genesis"></canvas>
+<canvas id="grain"></canvas>
+<div id="cursor"></div>
 
-<header>
-  <div class="eyebrow"><span class="dot"></span> RECEBENDO — CANAL ABERTO</div>
-  <h1>Estamos <em>ouvindo</em><br>o silêncio entre<br>as estrelas.</h1>
-  <p class="sub">Uma rede de antenas voltadas para o vazio, catalogando cada ruído que não deveria existir. Isto não é ficção — é um registro do que já passou por aqui.</p>
+<nav class="epochs-nav">
+  <a href="#s1" class="active"></a>
+  <a href="#s2"></a>
+  <a href="#s3"></a>
+  <a href="#s4"></a>
+</nav>
 
-  <div class="readout">
-    <div>DECLINAÇÃO<strong>+27° 14&#39; 08&quot;</strong></div>
-    <div>FREQUÊNCIA<strong>1420.40 MHz</strong></div>
-    <div>RELAÇÃO SINAL/RUÍDO<strong id="snr">— dB</strong></div>
-  </div>
+<div class="veil">
 
-  <canvas id="wave"></canvas>
-</header>
+  <section id="s1">
+    <div class="roman">Antes do primeiro segundo</div>
+    <h1 class="epoch">O <em>silêncio</em><br>ainda não tinha nome</h1>
+    <p class="scripture">Não havia cima nem baixo, não havia depois. Havia apenas a possibilidade, dobrada sobre si mesma, esperando uma razão para se abrir.</p>
+    <div class="scrollcue"><span>DESÇA</span><span class="stem"></span></div>
+  </section>
 
-<section>
-  <div class="eyebrow" style="color:var(--violet)">Registros recentes</div>
-  <div class="grid">
-    <div class="card">
-      <div class="freq">42.7 MHz — 03:14</div>
-      <h3>Pulso repetido</h3>
-      <p>Um padrão de 1.2 segundos, repetido onze vezes, depois silêncio absoluto por seis horas.</p>
+  <section id="s2">
+    <div class="roman">Epoch I — a fratura</div>
+    <h1 class="epoch">Algo <em>rasgou</em><br>o nada ao meio</h1>
+    <p class="scripture">Um ponto sem tamanho decidiu, sem motivo, deixar de ser um ponto. E nesse gesto ínfimo, todo o espaço que existirá nasceu de uma vez.</p>
+  </section>
+
+  <section id="s3">
+    <div class="roman">Epoch II — a dispersão</div>
+    <h1 class="epoch">A luz <em>correu</em><br>antes de saber pra onde</h1>
+    <p class="scripture">Bilhões de faíscas se afastando umas das outras, cada uma carregando um pedaço do instante original, para que um dia alguém, em algum canto, pudesse olhar para cima.</p>
+    <div class="relic">
+      <div><div class="n">13.8</div><div class="l">Bilhões de anos</div></div>
+      <div><div class="n">∞</div><div class="l">Direções possíveis</div></div>
+      <div><div class="n">1</div><div class="l">Chance que houve</div></div>
     </div>
-    <div class="card">
-      <div class="freq">108.3 MHz — 11:52</div>
-      <h3>Eco atrasado</h3>
-      <p>A mesma transmissão, chegando duas vezes com 4 segundos de diferença. A origem não muda.</p>
-    </div>
-    <div class="card">
-      <div class="freq">1420.4 MHz — 19:07</div>
-      <h3>Linha do hidrogênio</h3>
-      <p>Ruído de fundo cósmico, quase perfeito demais para ser apenas ruído.</p>
-    </div>
-    <div class="card">
-      <div class="freq">203.9 MHz — 23:41</div>
-      <h3>Silêncio ativo</h3>
-      <p>Ausência de sinal onde sempre houve um. A escuta continua mesmo quando não há nada.</p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<footer>
-  <span>ESTAÇÃO 0x7F</span>
-  <span>TODAS AS COORDENADAS SÃO APROXIMADAS</span>
-</footer>
+  <section id="s4">
+    <div class="roman">Epoch III — o observador</div>
+    <h1 class="epoch">E então, <em>alguém</em><br>ficou olhando</h1>
+    <p class="scripture">Depois de tanto tempo, tanta poeira virando estrela e estrela virando poeira outra vez — os átomos se arrumaram de um jeito que pôde perguntar de onde vieram. Você é essa pergunta.</p>
+  </section>
+
+</div>
+
+<footer>Feito do mesmo material que as estrelas <span class="flame">✦</span> gênese, 13.8 bilhões de anos e um instante atrás</footer>
 
 <script>
-// Starfield
-const starsCanvas = document.getElementById('stars');
-const sctx = starsCanvas.getContext('2d');
-let stars = [];
-function resizeStars(){
-  starsCanvas.width = innerWidth;
-  starsCanvas.height = document.body.scrollHeight;
-  stars = Array.from({length: Math.floor(innerWidth*innerHeight/4000)}, () => ({
-    x: Math.random()*starsCanvas.width,
-    y: Math.random()*starsCanvas.height,
-    r: Math.random()*1.4+.2,
-    speed: Math.random()*.3+.05,
+/* ---------- Cursor ---------- */
+const cursor = document.getElementById('cursor');
+window.addEventListener('mousemove', e=>{
+  cursor.style.left = e.clientX+'px';
+  cursor.style.top = e.clientY+'px';
+});
+document.querySelectorAll('a').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>{ cursor.style.width='40px'; cursor.style.height='40px'; cursor.style.borderColor='#ff6b4a'; });
+  el.addEventListener('mouseleave', ()=>{ cursor.style.width='22px'; cursor.style.height='22px'; cursor.style.borderColor='#e8c887'; });
+});
+
+/* ---------- Nav active state ---------- */
+const navLinks = document.querySelectorAll('.epochs-nav a');
+const sections = document.querySelectorAll('section');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('active'));
+      const idx = [...sections].indexOf(entry.target);
+      navLinks[idx].classList.add('active');
+    }
+  });
+}, {threshold:.5});
+sections.forEach(s=>io.observe(s));
+
+/* ---------- Genesis canvas: big bang particle field ---------- */
+const canvas = document.getElementById('genesis');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const PARTICLE_COUNT = 700;
+const colors = ['#e8c887','#ff6b4a','#8a6fff','#ffffff','#b8b4d0'];
+
+function resize(){
+  W = canvas.width = innerWidth;
+  H = canvas.height = document.body.scrollHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function spawnParticle(originX, originY){
+  const angle = Math.random()*Math.PI*2;
+  const speed = Math.random()*1.4+.2;
+  return {
+    x: originX, y: originY,
+    vx: Math.cos(angle)*speed,
+    vy: Math.sin(angle)*speed,
+    r: Math.random()*1.8+.3,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    life: Math.random()*400+300,
+    age: 0,
     tw: Math.random()*Math.PI*2
-  }));
+  };
 }
-function drawStars(t){
-  sctx.clearRect(0,0,starsCanvas.width,starsCanvas.height);
-  for(const s of stars){
-    const alpha = .4 + Math.sin(t*.001 + s.tw)*.3;
-    sctx.fillStyle = `rgba(232,230,240,${Math.max(0,alpha)})`;
-    sctx.beginPath();
-    sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    sctx.fill();
-  }
-  requestAnimationFrame(drawStars);
-}
-resizeStars();
-window.addEventListener('resize', resizeStars);
-requestAnimationFrame(drawStars);
 
-// Waveform
-const waveCanvas = document.getElementById('wave');
-const wctx = waveCanvas.getContext('2d');
-function resizeWave(){
-  waveCanvas.width = waveCanvas.offsetWidth;
-  waveCanvas.height = waveCanvas.offsetHeight;
-}
-function drawWave(t){
-  resizeWave();
-  wctx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
-  wctx.strokeStyle = '#ffb347';
-  wctx.lineWidth = 1.5;
-  wctx.beginPath();
-  const mid = waveCanvas.height/2;
-  for(let x=0; x<waveCanvas.width; x++){
-    const y = mid
-      + Math.sin(x*0.02 + t*0.002)*18
-      + Math.sin(x*0.05 + t*0.004)*8
-      + Math.sin(x*0.008 + t*0.001)*24;
-    x===0 ? wctx.moveTo(x,y) : wctx.lineTo(x,y);
+function initParticles(){
+  particles = [];
+  const cx = innerWidth/2, cy = innerHeight*0.9;
+  for(let i=0;i<PARTICLE_COUNT;i++){
+    particles.push(spawnParticle(cx, cy));
   }
-  wctx.stroke();
-  requestAnimationFrame(drawWave);
 }
-requestAnimationFrame(drawWave);
+initParticles();
 
-// Fake SNR readout
-const snr = document.getElementById('snr');
-setInterval(()=>{
-  snr.textContent = (Math.random()*8+1).toFixed(1) + ' dB';
-}, 1400);
+let scrollY = 0;
+window.addEventListener('scroll', ()=>{ scrollY = window.scrollY; });
+
+function draw(t){
+  ctx.fillStyle = 'rgba(3,3,9,0.18)';
+  ctx.fillRect(0,0,W,H);
+
+  // ambient nebula glow following scroll
+  const glowY = scrollY + innerHeight*0.4;
+  const grad = ctx.createRadialGradient(W/2, glowY, 0, W/2, glowY, innerHeight*0.9);
+  grad.addColorStop(0, 'rgba(138,111,255,0.06)');
+  grad.addColorStop(0.5, 'rgba(255,107,74,0.03)');
+  grad.addColorStop(1, 'rgba(3,3,9,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, scrollY, W, innerHeight);
+
+  for(const p of particles){
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vx *= 0.999;
+    p.vy *= 0.999;
+    p.age++;
+    const flicker = 0.5 + Math.sin(t*0.002 + p.tw)*0.5;
+    const lifeFade = 1 - (p.age/p.life);
+
+    ctx.globalAlpha = Math.max(0, lifeFade*flicker);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y - scrollY*0.3, p.r, 0, Math.PI*2);
+    ctx.fill();
+
+    if(p.age > p.life){
+      Object.assign(p, spawnParticle(innerWidth/2, innerHeight*0.9 + Math.random()*H*0.6));
+    }
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* ---------- Film grain ---------- */
+const grainCanvas = document.getElementById('grain');
+const gctx = grainCanvas.getContext('2d');
+function resizeGrain(){
+  grainCanvas.width = innerWidth;
+  grainCanvas.height = innerHeight;
+}
+resizeGrain();
+window.addEventListener('resize', resizeGrain);
+function renderGrain(){
+  const imgData = gctx.createImageData(grainCanvas.width, grainCanvas.height);
+  const buffer = new Uint32Array(imgData.data.buffer);
+  for(let i=0;i<buffer.length;i++){
+    if(Math.random() < 0.05) buffer[i] = 0xffffffff;
+  }
+  gctx.putImageData(imgData, 0, 0);
+  setTimeout(()=>requestAnimationFrame(renderGrain), 60);
+}
+renderGrain();
 </script>
 
 </body>
