@@ -3,346 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GURI STRIPE — a bicicleta que era o mundo inteiro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>HUPI Strip</title>
 <style>
-  :root{
-    --asphalt:#0e0d12;
-    --deep:#161320;
-    --amarelo:#ffd23f;
-    --vermelho:#ff4d4d;
-    --azul:#4d7cff;
-    --creme:#f2ede0;
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    color:#222;
+    padding:2rem;
   }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--asphalt);
-    color:var(--creme);
-    font-family:'Space Mono', monospace;
-    overflow-x:hidden;
-    cursor:none;
+  .card {
+    max-width:600px;
+    margin:0 auto;
+    background:#fff;
+    border-radius:8px;
+    padding:2rem;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
   }
-  ::selection{ background:var(--vermelho); color:#000; }
-
-  #cursor{
-    position:fixed; top:0; left:0;
-    width:22px; height:22px;
-    border:1px solid var(--amarelo);
-    border-radius:50%;
-    pointer-events:none;
-    z-index:9999;
-    transform:translate(-50%,-50%);
-    transition:width .2s, height .2s, border-color .2s;
-    mix-blend-mode:screen;
+  h1 {
+    font-size:1.8rem;
+    margin-bottom:.3rem;
   }
-
-  #trilha{ position:fixed; inset:0; z-index:0; }
-  #grain{
-    position:fixed; inset:0; z-index:1;
-    pointer-events:none; opacity:.05; mix-blend-mode:overlay;
+  .tag {
+    color:#777;
+    font-size:.9rem;
+    margin-bottom:1.5rem;
   }
-
-  .veil{ position:relative; z-index:3; }
-
-  section{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:10vh 6vw;
-    position:relative;
+  table {
+    width:100%;
+    border-collapse:collapse;
   }
-
-  .roman{
-    font-family:'Cormorant Garamond', serif;
-    font-weight:300; font-style:italic;
-    color:var(--amarelo);
-    letter-spacing:.4em;
-    font-size:.75rem;
-    text-transform:uppercase;
-    margin-bottom:3rem;
-    opacity:0;
-    animation:rise 1.6s ease forwards;
+  td {
+    padding:.6rem 0;
+    border-bottom:1px solid #eee;
+    font-size:.95rem;
   }
-
-  h1.epoch{
-    font-family:'Cormorant Garamond', serif;
-    font-weight:300;
-    font-size:clamp(3rem, 10vw, 8.5rem);
-    line-height:.95;
-    opacity:0;
-    animation:rise 1.8s .3s ease forwards;
+  td:first-child {
+    color:#555;
+    width:40%;
   }
-  h1.epoch em{
-    font-style:italic;
-    background:linear-gradient(120deg, var(--amarelo), var(--vermelho) 55%, var(--azul));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-  }
-
-  p.scripture{
-    max-width:44ch;
-    font-family:'Cormorant Garamond', serif;
-    font-size:clamp(1.1rem,2vw,1.5rem);
-    font-style:italic;
-    color:#cfc8b8;
-    line-height:1.8;
-    margin-top:2.5rem;
-    opacity:0;
-    animation:rise 1.8s .6s ease forwards;
-  }
-
-  @keyframes rise{
-    from{opacity:0; transform:translateY(28px);}
-    to{opacity:1; transform:translateY(0);}
-  }
-
-  .scrollcue{
-    position:absolute; bottom:6vh;
-    display:flex; flex-direction:column; align-items:center; gap:.8rem;
-    color:#cfc8b8; font-size:.65rem; letter-spacing:.3em; opacity:.6;
-  }
-  .scrollcue .stem{
-    width:1px; height:50px;
-    background:linear-gradient(var(--amarelo), transparent);
-    animation:stretch 2s ease-in-out infinite;
-  }
-  @keyframes stretch{
-    0%,100%{transform:scaleY(1); opacity:.4;}
-    50%{transform:scaleY(1.3); opacity:1;}
-  }
-
-  .epochs-nav{
-    position:fixed; right:3vw; top:50%; transform:translateY(-50%);
-    z-index:10; display:flex; flex-direction:column; gap:1.4rem;
-  }
-  .epochs-nav a{
-    width:8px; height:8px; border-radius:50%;
-    background:transparent; border:1px solid #cfc8b8;
-    display:block; transition:.3s;
-  }
-  .epochs-nav a.active{ background:var(--amarelo); border-color:var(--amarelo); box-shadow:0 0 14px var(--amarelo); }
-
-  .relic{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:1px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.08);
-    max-width:900px; width:100%;
-    margin-top:5rem;
-  }
-  .relic div{ background:var(--asphalt); padding:2.2rem 1.4rem; }
-  .relic .n{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.4rem; color:var(--amarelo); }
-  .relic .l{ font-size:.6rem; letter-spacing:.2em; color:#cfc8b8; margin-top:.6rem; text-transform:uppercase; }
-
-  /* Bicicleta SVG assinatura */
-  .bike-wrap{
-    margin-top:4rem;
-    width:min(90vw, 560px);
-    opacity:0;
-    animation:rise 1.8s .9s ease forwards;
-  }
-  .bike-wrap svg{ width:100%; height:auto; overflow:visible; }
-  .stripe-a{ stroke:var(--amarelo); }
-  .stripe-b{ stroke:var(--vermelho); }
-  .stripe-c{ stroke:var(--azul); }
-  .wheel{
-    fill:none; stroke:var(--creme); stroke-width:3;
-    transform-origin:center;
-    animation:spin 4s linear infinite;
-  }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-  @media (prefers-reduced-motion:reduce){ .wheel{ animation:none; } }
-
-  footer{
-    position:relative; z-index:3;
-    text-align:center; padding:8vh 6vw;
-    font-size:.65rem; letter-spacing:.3em;
-    color:#cfc8b8; text-transform:uppercase;
-  }
-  footer .flame{ color:var(--vermelho); }
-
-  @media (prefers-reduced-motion: reduce){
-    * { animation-duration: 0.01ms !important; }
+  td:last-child {
+    font-weight:bold;
   }
 </style>
 </head>
 <body>
 
-<canvas id="trilha"></canvas>
-<canvas id="grain"></canvas>
-<div id="cursor"></div>
+<div class="card">
+  <h1>HUPI Strip</h1>
+  <div class="tag">Quadro para uso urbano e manobras (street/freestyle)</div>
 
-<nav class="epochs-nav">
-  <a href="#s1" class="active"></a>
-  <a href="#s2"></a>
-  <a href="#s3"></a>
-  <a href="#s4"></a>
-</nav>
-
-<div class="veil">
-
-  <section id="s1">
-    <div class="roman">Antes do primeiro pedal</div>
-    <h1 class="epoch">Ela estava <em>encostada</em><br>no muro, esperando</h1>
-    <p class="scripture">Quadro baixo, guidão torto de tanto tombo, e aquelas três listras — amarela, vermelha, azul — riscando o quadro feito um raio parado no tempo.</p>
-    <div class="scrollcue"><span>DESÇA</span><span class="stem"></span></div>
-  </section>
-
-  <section id="s2">
-    <div class="roman">Epoch I — o primeiro empurrão</div>
-    <h1 class="epoch">Alguém <em>soltou</em><br>e não caiu</h1>
-    <p class="scripture">A rodinha ainda tava lá, encostada na parede da garagem, esquecida de propósito. O guri não olhou pra trás — só sentiu o vento entrar pelas listras da camisa e pela bicicleta.</p>
-  </section>
-
-  <section id="s3">
-    <div class="roman">Epoch II — o bairro inteiro</div>
-    <h1 class="epoch">A rua virou <em>pista</em><br>e o fim de tarde, eterno</h1>
-    <p class="scripture">Cada quarteirão era um continente, cada poça um oceano pra atravessar de pé nos pedais, mãos soltas do guidão, coração batendo mais rápido que a corrente.</p>
-    <div class="relic">
-      <div><div class="n">3</div><div class="l">Listras no quadro</div></div>
-      <div><div class="n">∞</div><div class="l">Voltas no quarteirão</div></div>
-      <div><div class="n">1</div><div class="l">Bicicleta que era tudo</div></div>
-    </div>
-  </section>
-
-  <section id="s4">
-    <div class="roman">Epoch III — o que fica</div>
-    <h1 class="epoch">Hoje ela é só <em>memória</em><br>enferrujando no galpão</h1>
-    <p class="scripture">Mas de vez em quando, num cheiro de chuva no asfalto quente, o guri ainda sente as listras passando rápido demais pra ver, e sabe: aquele verão nunca terminou de verdade.</p>
-
-    <div class="bike-wrap">
-      <svg viewBox="0 0 300 140" fill="none">
-        <circle class="wheel" cx="70" cy="100" r="32"/>
-        <circle class="wheel" cx="230" cy="100" r="32"/>
-        <circle cx="70" cy="100" r="3" fill="#f2ede0"/>
-        <circle cx="230" cy="100" r="3" fill="#f2ede0"/>
-        <path d="M70 100 L140 40 L180 100" stroke="#f2ede0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M140 40 L160 40" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
-        <path d="M70 100 L180 100" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
-        <path d="M230 100 L180 100" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
-        <path d="M230 100 L200 55" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
-        <path d="M200 55 L215 40 M200 55 L185 40" stroke="#f2ede0" stroke-width="4" stroke-linecap="round"/>
-        <path class="stripe-a" d="M95 88 L165 55" stroke-width="4" stroke-linecap="round"/>
-        <path class="stripe-b" d="M100 95 L170 62" stroke-width="4" stroke-linecap="round"/>
-        <path class="stripe-c" d="M105 102 L175 69" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-    </div>
-  </section>
-
+  <table>
+    <tr><td>Material do quadro</td><td>Alumínio 6061 T6</td></tr>
+    <tr><td>Gancheira</td><td>Horizontal</td></tr>
+    <tr><td>Aro</td><td>26</td></tr>
+    <tr><td>Caixa de direção</td><td>Tapered</td></tr>
+    <tr><td>Transmissão</td><td>Single speed</td></tr>
+    <tr><td>Estilo</td><td>Urbano / Street / Wheeling</td></tr>
+  </table>
 </div>
-
-<footer>Guri, bicicleta e as três listras <span class="flame">✦</span> um verão que não teve fim</footer>
-
-<script>
-/* ---------- Cursor ---------- */
-const cursor = document.getElementById('cursor');
-window.addEventListener('mousemove', e=>{
-  cursor.style.left = e.clientX+'px';
-  cursor.style.top = e.clientY+'px';
-});
-document.querySelectorAll('a').forEach(el=>{
-  el.addEventListener('mouseenter', ()=>{ cursor.style.width='40px'; cursor.style.height='40px'; cursor.style.borderColor='#ff4d4d'; });
-  el.addEventListener('mouseleave', ()=>{ cursor.style.width='22px'; cursor.style.height='22px'; cursor.style.borderColor='#ffd23f'; });
-});
-
-/* ---------- Nav active state ---------- */
-const navLinks = document.querySelectorAll('.epochs-nav a');
-const sections = document.querySelectorAll('section');
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      navLinks.forEach(l=>l.classList.remove('active'));
-      const idx = [...sections].indexOf(entry.target);
-      navLinks[idx].classList.add('active');
-    }
-  });
-}, {threshold:.5});
-sections.forEach(s=>io.observe(s));
-
-/* ---------- Trilha canvas: linhas de listras voando (efeito velocidade) ---------- */
-const canvas = document.getElementById('trilha');
-const ctx = canvas.getContext('2d');
-let W, H, lines = [];
-const LINE_COUNT = 90;
-const colors = ['#ffd23f','#ff4d4d','#4d7cff'];
-
-function resize(){
-  W = canvas.width = innerWidth;
-  H = canvas.height = document.body.scrollHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-function spawnLine(){
-  return {
-    x: Math.random()*W,
-    y: Math.random()*H,
-    len: Math.random()*60+20,
-    speed: Math.random()*3+1,
-    color: colors[Math.floor(Math.random()*colors.length)],
-    alpha: Math.random()*0.25+0.05
-  };
-}
-function initLines(){
-  lines = [];
-  for(let i=0;i<LINE_COUNT;i++) lines.push(spawnLine());
-}
-initLines();
-
-let scrollY = 0;
-window.addEventListener('scroll', ()=>{ scrollY = window.scrollY; });
-
-function draw(){
-  ctx.fillStyle = 'rgba(14,13,18,0.15)';
-  ctx.fillRect(0,0,W,H);
-
-  for(const l of lines){
-    ctx.strokeStyle = l.color;
-    ctx.globalAlpha = l.alpha;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(l.x, l.y - scrollY*0.2);
-    ctx.lineTo(l.x + l.len, l.y - scrollY*0.2);
-    ctx.stroke();
-
-    l.x += l.speed;
-    if(l.x > W + l.len){
-      Object.assign(l, spawnLine());
-      l.x = -l.len;
-    }
-  }
-  ctx.globalAlpha = 1;
-  requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
-
-/* ---------- Film grain ---------- */
-const grainCanvas = document.getElementById('grain');
-const gctx = grainCanvas.getContext('2d');
-function resizeGrain(){
-  grainCanvas.width = innerWidth;
-  grainCanvas.height = innerHeight;
-}
-resizeGrain();
-window.addEventListener('resize', resizeGrain);
-function renderGrain(){
-  const imgData = gctx.createImageData(grainCanvas.width, grainCanvas.height);
-  const buffer = new Uint32Array(imgData.data.buffer);
-  for(let i=0;i<buffer.length;i++){
-    if(Math.random() < 0.05) buffer[i] = 0xffffffff;
-  }
-  gctx.putImageData(imgData, 0, 0);
-  setTimeout(()=>requestAnimationFrame(renderGrain), 60);
-}
-renderGrain();
-</script>
 
 </body>
 </html>
